@@ -28,6 +28,7 @@ def get_missing_apt_packages() -> Set[str]:
         f"libpython{sys.version_info.major}.{sys.version_info.minor}-dev",
         f"libpython{sys.version_info.major}-dev",
         "libgtk-3-dev",
+        f"python{sys.version_info.major}-wxgtk{sys.version_info.major + 1}.0",
     }
     return PACKAGES - get_installed_apt_packages()
 
@@ -43,11 +44,12 @@ def install_apt_packages(packages: Set[str]):
 
 def get_installed_pip_packages() -> Set[str]:
     return {
-        line.split()[0] for line in subprocess.check_output([sys.executable, "-m", "pip", "list"]).decode().splitlines()
+        line.split()[0]
+        for line in subprocess.check_output([sys.executable, "-m", "pip", "list"]).decode().lower().splitlines()
     }
 
 
-def get_missing_pip_packages() -> Tuple[Set[str], Set[str], Set[str]]:
+def get_missing_pip_packages() -> Tuple[Set[str], Set[str]]:
     PACKAGES_LV1 = {
         "attrdict",
         "matplotlib",
@@ -55,22 +57,19 @@ def get_missing_pip_packages() -> Tuple[Set[str], Set[str], Set[str]]:
         "kiwisolver",
     }
     PACKAGES_LV2 = {
-        "wxPython",
-    }
-    PACKAGES_LV3 = {
         "pymavlink",
         "MAVProxy",
     }
 
-    missing_pkgs = (PACKAGES_LV1 | PACKAGES_LV2 | PACKAGES_LV3) - get_installed_pip_packages()
-    return missing_pkgs & PACKAGES_LV1, missing_pkgs & PACKAGES_LV2, missing_pkgs & PACKAGES_LV3
+    missing_pkgs = set(map(str.lower, (PACKAGES_LV1 | PACKAGES_LV2))) - get_installed_pip_packages()
+    return missing_pkgs & PACKAGES_LV1, missing_pkgs & PACKAGES_LV2
 
 
-def missing_pip_packages_is_empty(packages: Tuple[Set[str], Set[str], Set[str]]) -> bool:
-    return len(packages[0] | packages[1] | packages[2]) == 0
+def missing_pip_packages_is_empty(packages: Tuple[Set[str], Set[str]]) -> bool:
+    return len(packages[0] | packages[1]) == 0
 
 
-def install_pip_packages(packages: Tuple[Set[str], Set[str], Set[str]]):
+def install_pip_packages(packages: Tuple[Set[str], Set[str]]):
     for package_lvl in packages:
         if len(package_lvl) > 0:
             subprocess.check_call([sys.executable, "-m", "pip", "install", *package_lvl])
@@ -86,7 +85,10 @@ def clone_repo(url: str, path: Union[str, Path]):
     path.mkdir(parents=True, exist_ok=True)
     subprocess.check_call(["git", "clone", url, str(path)])
     subprocess.check_call(["git", "submodule", "update", "--init", "--recursive"], cwd=path)
-    subprocess.check_call(["Tools/environment_install/install-prereqs-ubuntu.sh", "-y"], cwd=path)
+
+
+def install_ardupilot_dependencies(path: Union[str, Path]):
+    subprocess.check_call(["./Tools/environment_install/install-prereqs-ubuntu.sh", "-y"], cwd=path)
 
 
 def build_ardupilot(path: Union[str, Path]):
@@ -189,10 +191,7 @@ if __name__ == "__main__":
         # Clone ardupilot
         if not is_repo_cloned(ARDUPILOT_PATH):
             clone_repo("https://github.com/ArduPilot/ardupilot.git", ARDUPILOT_PATH)
-            # Install dependencies
-            subprocess.check_call(
-                ["sh", "Tools/environment_install/install-prereqs-ubuntu.sh", "-y"], cwd=ARDUPILOT_PATH
-            )
+            install_ardupilot_dependencies(ARDUPILOT_PATH)
 
         # Configure sitl for copter
         if not is_configured(ARDUPILOT_PATH):

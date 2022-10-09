@@ -4,11 +4,6 @@ rosfind(){
     ros2 pkg prefix $1 | perl -pe "s/install/src/"
 }
 
-if [ ! -d $(rosfind artemis_simulation)/ardupilot/ardupilot ]; then
-    echo 'Build ardupilot first by running `ros2 run artemis_simulation setup_sitl.sh`'
-    exit -1
-fi
-
 if [ $# -eq 0 ]; then
     args="-v ArduCopter --console --map -L UdeS"
 else
