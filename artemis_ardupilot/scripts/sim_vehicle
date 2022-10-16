@@ -1,13 +1,9 @@
 #! /usr/bin/env bash
 
-rosfind(){
-    ros2 pkg prefix $1 | perl -pe "s/install/src/"
-}
-
 if [ $# -eq 0 ]; then
     args="-v ArduCopter --console --map -L UdeS"
 else
     args="-v ArduCopter $@"
 fi
 
-exec $(rosfind artemis_simulation)/ardupilot/ardupilot/Tools/autotest/sim_vehicle.py $args
+exec $ARTEMIS_SIM_VEHICLE_PATH/sim_vehicle.py $args

@@ -37,6 +37,8 @@ install(PROGRAMS
     DESTINATION lib/${PROJECT_NAME}
 )
 
+ament_environment_hooks(env_hook/artemis_ardupilot.sh.in)
+
 add_custom_target(
     ardupilot_build
     ALL

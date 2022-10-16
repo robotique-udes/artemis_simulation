@@ -45,7 +45,7 @@ ros2 run artemis_ardupilot sim_vehicle -w
 
 After that, you can just run the following command:
 ```sh
-ros2 run artemis_simulation sim_vehicle
+ros2 run artemis_ardupilot sim_vehicle
 ```
 By default, it will launch the underlying ArduPilot simulator with the following arguments:
 - `-v ArduCopter` :: Using copter
