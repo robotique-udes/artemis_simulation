@@ -149,7 +149,7 @@ if __name__ == "__main__":
         missing_apt = get_missing_apt_packages()
         if len(missing_apt) != 0:
             logging.error(
-                f"Missing apt packages: {missing_apt}. Run `cmake/setup_sitl.py .` in the artemis_simulation package root to install them."
+                f"Missing apt packages: {missing_apt}. Run `cmake/setup_sitl.py .` in the artemis_ardupilot package root to install them."
             )
             sys.exit(1)
         missing_pip = get_missing_pip_packages()
@@ -158,7 +158,7 @@ if __name__ == "__main__":
             install_pip_packages(missing_pip)
         if not is_repo_cloned(ARDUPILOT_PATH):
             logging.error(
-                f"ArduPilot not initialized to {ARDUPILOT_PATH}. Run `cmake/setup_sitl.py .` in the artemis_simulation package root to fetch and initialize it."
+                f"ArduPilot not initialized to {ARDUPILOT_PATH}. Run `cmake/setup_sitl.py .` in the artemis_ardupilot package root to fetch and initialize it."
             )
             sys.exit(1)
         if not is_configured(ARDUPILOT_PATH):

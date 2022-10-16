@@ -26,7 +26,7 @@ git clone https://github.com/robotique-udes/artemis_simulation
 ### Downloading Ardupilot and installing its depencencies
 Run the following command from the repo root:
 ```sh
-cmake/setup_sitl.py .
+artemis_ardupilot/cmake/setup_sitl.py ./artemis_ardupilot
 ```
 
 ## Building ArduPilot
@@ -40,7 +40,7 @@ You can then add the workspace setup to your `.bashrc` (`source ~/artemis_ws/ins
 ## Running the SITL using MAVProxy
 The first time you run it, you will need to pass the `-w` flag, to wipe the virtual EEPROM and load the default parameters (https://ardupilot.org/dev/docs/setting-up-sitl-on-linux.html).
 ```sh
-ros2 run artemis_simulation sim_vehicle -w
+ros2 run artemis_ardupilot sim_vehicle -w
 ```
 
 After that, you can just run the following command:
