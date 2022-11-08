@@ -1,0 +1,16 @@
+_WS_BUILD_PATH="$(echo '@CMAKE_BINARY_DIR@' | perl -pe 's|build(/artemis_gazebo)?|build|')"
+_WS_SRC_PATH="$(echo '@CMAKE_SOURCE_DIR@' | perl -pe 's|src/artemis_simulation(.*)|src|')"
+
+_THIS_SRC_PATH="@CMAKE_SOURCE_DIR@"
+
+# ardupilot_gazebo
+ament_prepend_unique_value IGN_GAZEBO_SYSTEM_PLUGIN_PATH "$_WS_BUILD_PATH/ardupilot_sitl_gazebo"
+ament_prepend_unique_value IGN_GAZEBO_RESOURCE_PATH "$_WS_SRC_PATH/ardupilot_gazebo/models"
+ament_prepend_unique_value IGN_GAZEBO_RESOURCE_PATH "$_WS_SRC_PATH/ardupilot_gazebo/worlds"
+
+# artemis_gazebo
+ament_prepend_unique_value IGN_GAZEBO_RESOURCE_PATH "$_THIS_SRC_PATH/models"
+ament_prepend_unique_value IGN_GAZEBO_RESOURCE_PATH "$_THIS_SRC_PATH/worlds"
+
+# Required for cylinders in URDF visualizations
+export LC_NUMERIC="en_US.UTF-8"
